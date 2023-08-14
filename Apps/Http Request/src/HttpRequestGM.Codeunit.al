@@ -44,6 +44,18 @@ codeunit 88000 "Http Request GM"
             AddHeader(HttpHeaders, Header, RequestHeaders.Get(Header));
     end;
 
+    /// <summary>
+    /// Configures the request body with the provided <paramref name="RequestBody"/>.
+    /// </summary>
+    /// <param name="RequestBody">The content to set as the request body.</param>
+    procedure SetBody(RequestBody: Text)
+    var
+        HttpContent: HttpContent;
+    begin
+        HttpContent.WriteFrom(RequestBody);
+        HttpRequestMessage.Content(HttpContent);
+    end;
+
     local procedure GetRequestMethodAsText(HttpMethodGM: Enum "Http Method GM"): Text
     var
         Index: Integer;
