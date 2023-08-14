@@ -56,6 +56,45 @@ codeunit 88000 "Http Request GM"
         HttpRequestMessage.Content(HttpContent);
     end;
 
+    /// <summary>
+    /// Appends the provided <paramref name="ContentHeaders"/> to the HTTP content.
+    /// </summary>
+    /// <param name="ContentHeaders">HTTP content headers to include.</param>
+    procedure SetContentHeaders(ContentHeaders: Dictionary of [Text, Text])
+    var
+        HttpHeaders: HttpHeaders;
+        HttpContent: HttpContent;
+        Headers: List of [Text];
+        Header: Text;
+    begin
+        HttpContent := HttpRequestMessage.Content();
+        HttpContent.GetHeaders(HttpHeaders);
+        HttpHeaders.Clear();
+        Headers := ContentHeaders.Keys();
+        foreach Header in Headers do
+            AddHeader(HttpHeaders, Header, ContentHeaders.Get(Header));
+
+        HttpRequestMessage.Content(HttpContent);
+    end;
+
+    /// <summary>
+    /// Sends the configured HTTP request.
+    /// </summary>
+    procedure Send(): Boolean
+    begin
+        if HttpClient.Send(HttpRequestMessage, HttpResponseMessage) then;
+        ErrorIfRequestBlockedByEnvironment();
+    end;
+
+    /// <summary>
+    /// Determines if the response indicates a successful status.
+    /// </summary>
+    /// <returns>True if the response indicates success; otherwise, false.</returns>
+    procedure IsSuccessStatusCode(): Boolean
+    begin
+        exit(HttpResponseMessage.IsSuccessStatusCode());
+    end;
+
     local procedure GetRequestMethodAsText(HttpMethodGM: Enum "Http Method GM"): Text
     var
         Index: Integer;
@@ -70,5 +109,17 @@ codeunit 88000 "Http Request GM"
             HttpHeaders.Remove(HeaderName);
 
         HttpHeaders.Add(HeaderName, HeaderValue);
+    end;
+
+    local procedure ErrorIfRequestBlockedByEnvironment()
+    var
+        ModuleInfo: ModuleInfo;
+        RequestBlockedByEnviromentErr: Label 'Execution of requests for the application ''%1'' is blocked. Please unlock requests in the extension management.', Comment = '%1 = Application Name';
+    begin
+        if not HttpResponseMessage.IsBlockedByEnvironment() then
+            exit;
+
+        NavApp.GetCurrentModuleInfo(ModuleInfo);
+        Error(RequestBlockedByEnviromentErr, ModuleInfo.Name());
     end;
 }
