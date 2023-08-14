@@ -13,7 +13,7 @@ codeunit 88000 "Http Request GM"
     /// Configures the HTTP request URI to the provided <paramref name="RequestUri"/>.
     /// </summary>
     /// <param name="RequestUri">The URI for the request to be set.</param>
-    procedure SetRequestUri(RequestUri: Text)
+    procedure SetUri(RequestUri: Text)
     begin
         HttpRequestMessage.SetRequestUri(RequestUri);
     end;
@@ -31,7 +31,7 @@ codeunit 88000 "Http Request GM"
     /// Appends the provided <paramref name="RequestHeaders"/> to the HTTP request.
     /// </summary>
     /// <param name="RequestHeaders">HTTP request headers to include.</param>
-    procedure SetRequestHeaders(RequestHeaders: Dictionary of [Text, Text])
+    procedure SetHeaders(RequestHeaders: Dictionary of [Text, Text])
     var
         HttpHeaders: HttpHeaders;
         Headers: List of [Text];
