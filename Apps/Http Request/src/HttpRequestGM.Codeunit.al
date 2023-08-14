@@ -8,7 +8,6 @@ codeunit 88000 "Http Request GM"
         HttpRequestMessage: HttpRequestMessage;
         HttpResponseMessage: HttpResponseMessage;
 
-
     /// <summary>
     /// Configures the HTTP request URI to the provided <paramref name="RequestUri"/>.
     /// </summary>
