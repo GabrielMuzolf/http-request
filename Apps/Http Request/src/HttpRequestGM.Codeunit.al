@@ -95,6 +95,52 @@ codeunit 88000 "Http Request GM"
         exit(HttpResponseMessage.IsSuccessStatusCode());
     end;
 
+    /// <summary>
+    /// Retrieves the HTTP response status code.
+    /// </summary>
+    /// <returns>The HTTP response status code.</returns>
+    procedure GetHttpStatusCode(): Integer
+    begin
+        exit(HttpResponseMessage.HttpStatusCode());
+    end;
+
+    /// <summary>
+    /// Retrieves the reason phrase from the HTTP response.
+    /// </summary>
+    /// <returns>The reason phrase of the HTTP response.</returns>
+    procedure GetReasonPhrase(): Text
+    begin
+        exit(HttpResponseMessage.ReasonPhrase());
+    end;
+
+    /// <summary>
+    /// Retrieves the readable form of the request failure details.
+    /// </summary>
+    /// <returns>The response body containing details of the request failure.</returns>
+    procedure GetFailedTxt(): Text
+    var
+        RequestFailedErr: Label 'Request failed with code ''%1'' and reasone phrase ''%2''.', Comment = '%1 = Status Code, %2 = Reasone Phrase';
+    begin
+        if IsSuccessStatusCode() then
+            exit;
+
+        exit(StrSubstNo(RequestFailedErr, GetHttpStatusCode(), GetReasonPhrase()));
+    end;
+
+    /// <summary>
+    /// Retrieves the response body as text.
+    /// </summary>
+    /// <returns>The content of the response body.</returns>
+    procedure GetResponseBody(): Text
+    var
+        HttpContent: HttpContent;
+        ResponseBody: Text;
+    begin
+        HttpContent := HttpResponseMessage.Content();
+        HttpContent.ReadAs(ResponseBody);
+        exit(ResponseBody);
+    end;
+
     local procedure GetRequestMethodAsText(HttpMethodGM: Enum "Http Method GM"): Text
     var
         Index: Integer;
