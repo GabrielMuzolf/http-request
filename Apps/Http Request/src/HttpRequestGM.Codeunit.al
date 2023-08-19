@@ -81,7 +81,9 @@ codeunit 88000 "Http Request GM"
     /// </summary>
     procedure Send(): Boolean
     begin
-        if HttpClient.Send(HttpRequestMessage, HttpResponseMessage) then;
+        if HttpClient.Send(HttpRequestMessage, HttpResponseMessage) then
+            exit(true);
+
         ErrorIfRequestBlockedByEnvironment();
     end;
 
